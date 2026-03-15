@@ -181,10 +181,13 @@ const loadingProvider  = document.getElementById('loading-provider');
 const systemPromptEl   = document.getElementById('system-prompt');
 const resetPromptBtn   = document.getElementById('reset-prompt-btn');
 const prdTypePills     = document.getElementById('prd-type-pills');
+const darkModeBtn      = document.getElementById('dark-mode-btn');
 
 let rawPrdText  = '';
 let outputMode  = 'preview';
 let activePrdType = 'standard';
+
+marked.use({ gfm: true, breaks: false });
 
 // ── Model labels ──
 const MODEL_LABELS = {
@@ -233,6 +236,41 @@ function setKeyStatus(state) {
   if (savedType && PRD_PROMPTS[savedType]) activePrdType = savedType;
   applyPrdType(activePrdType);
 }
+
+// Restore drafts
+const DRAFT_KEYS = ['rough-context', 'meeting-notes', 'action-items', 'transcribed-voice'];
+DRAFT_KEYS.forEach(id => {
+  const saved = localStorage.getItem(`prd_draft_${id}`);
+  if (saved) document.getElementById(id).value = saved;
+});
+// Save drafts on input (debounced)
+let draftTimer = null;
+document.querySelectorAll('#rough-context,#meeting-notes,#action-items,#transcribed-voice')
+  .forEach(ta => {
+    ta.addEventListener('input', () => {
+      clearTimeout(draftTimer);
+      draftTimer = setTimeout(() => {
+        localStorage.setItem(`prd_draft_${ta.id}`, ta.value);
+      }, 800);
+    });
+  });
+
+document.getElementById('clear-drafts-btn').addEventListener('click', () => {
+  DRAFT_KEYS.forEach(id => {
+    localStorage.removeItem(`prd_draft_${id}`);
+    document.getElementById(id).value = '';
+  });
+});
+
+// Dark mode
+const prefersDark = localStorage.getItem('prd_theme') === 'dark' ||
+  (!localStorage.getItem('prd_theme') && window.matchMedia('(prefers-color-scheme: dark)').matches);
+if (prefersDark) document.documentElement.dataset.theme = 'dark';
+darkModeBtn.addEventListener('click', () => {
+  const isDark = document.documentElement.dataset.theme === 'dark';
+  document.documentElement.dataset.theme = isDark ? '' : 'dark';
+  localStorage.setItem('prd_theme', isDark ? 'light' : 'dark');
+});
 
 // ── Model / key listeners ──
 modelSelect.addEventListener('change', () => {
@@ -296,6 +334,29 @@ document.querySelectorAll('textarea').forEach(ta => {
     countEl.textContent = len ? `${len.toLocaleString()} chars` : '';
     countEl.classList.toggle('warn', len >= WARN_THRESHOLD);
   });
+});
+
+// Collapsible input cards
+document.querySelector('.inputs-panel').addEventListener('click', e => {
+  const btn = e.target.closest('.card-collapse-btn');
+  if (!btn) return;
+  const card = btn.closest('.card');
+  const body = card.querySelector('.card-body');
+  const isCollapsed = body.classList.toggle('collapsed');
+  btn.classList.toggle('collapsed', isCollapsed);
+  btn.setAttribute('aria-expanded', String(!isCollapsed));
+  if (card.dataset.cardId) {
+    localStorage.setItem(`prd_collapsed_${card.dataset.cardId}`, isCollapsed);
+  }
+});
+// Restore collapsed state
+document.querySelectorAll('.card[data-card-id]').forEach(card => {
+  const isCollapsed = localStorage.getItem(`prd_collapsed_${card.dataset.cardId}`) === 'true';
+  if (isCollapsed) {
+    card.querySelector('.card-body')?.classList.add('collapsed');
+    const btn = card.querySelector('.card-collapse-btn');
+    if (btn) { btn.classList.add('collapsed'); btn.setAttribute('aria-expanded', 'false'); }
+  }
 });
 
 // ── Voice input ──
@@ -592,7 +653,7 @@ function setOutputMode(mode) {
 }
 previewBtn.addEventListener('click', () => setOutputMode('preview'));
 editBtn.addEventListener('click',    () => setOutputMode('edit'));
-editTextarea.addEventListener('input', () => { rawPrdText = editTextarea.value; });
+editTextarea.addEventListener('input', () => { rawPrdText = editTextarea.value; updateWordCount(editTextarea.value); });
 
 // ── Generate PRD ──
 generateBtn.addEventListener('click', async () => {
@@ -656,25 +717,19 @@ generateBtn.addEventListener('click', async () => {
 
 // ── Markdown renderer ──
 function markdownToHtml(md) {
-  return md
-    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
-    .replace(/^### (.+)$/gm, '<h3>$1</h3>')
-    .replace(/^## (.+)$/gm,  '<h2>$1</h2>')
-    .replace(/^# (.+)$/gm,   '<h1>$1</h1>')
-    .replace(/\*\*\*(.+?)\*\*\*/g, '<strong><em>$1</em></strong>')
-    .replace(/\*\*(.+?)\*\*/g,     '<strong>$1</strong>')
-    .replace(/\*(.+?)\*/g,         '<em>$1</em>')
-    .replace(/`([^`]+)`/g,         '<code>$1</code>')
-    .replace(/^---+$/gm,           '<hr/>')
-    .replace(/^[-*] (.+)$/gm,      '<li>$1</li>')
-    .replace(/^\d+\. (.+)$/gm,     '<li>$1</li>')
-    .replace(/((<li>.*<\/li>\n?)+)/g, '<ul>$1</ul>')
-    .replace(/\n{2,}/g, '</p><p>')
-    .replace(/\n/g,     '<br/>');
+  return marked.parse(md);
+}
+
+const wordCountEl = document.getElementById('word-count');
+function updateWordCount(text) {
+  if (!wordCountEl) return;
+  const count = text.trim() ? text.trim().split(/\s+/).length : 0;
+  wordCountEl.textContent = count ? `${count.toLocaleString()} words` : '';
 }
 
 function renderPrd(md) {
-  outputArea.innerHTML = `<div class="prd-content"><p>${markdownToHtml(md)}</p></div>`;
+  outputArea.innerHTML = `<div class="prd-content">${markdownToHtml(md)}</div>`;
+  updateWordCount(md);
 }
 
 // ── Copy ──
@@ -710,11 +765,11 @@ function exportPrd(format) {
   if (format === 'txt')   return download('prd.txt', text, 'text/plain');
   if (format === 'html') {
     const body = markdownToHtml(text);
-    return download('prd.html', `<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>PRD</title><style>${EXPORT_CSS}</style></head><body><p>${body}</p></body></html>`, 'text/html');
+    return download('prd.html', `<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>PRD</title><style>${EXPORT_CSS}</style></head><body>${body}</body></html>`, 'text/html');
   }
   if (format === 'print') {
     const win = window.open('', '_blank');
-    win.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>PRD</title><style>${EXPORT_CSS}@media print{body{margin:0}}</style></head><body><p>${markdownToHtml(text)}</p></body></html>`);
+    win.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>PRD</title><style>${EXPORT_CSS}@media print{body{margin:0}}</style></head><body>${markdownToHtml(text)}</body></html>`);
     win.document.close();
     win.focus();
     win.print();
@@ -984,9 +1039,11 @@ function buildLibraryItem(doc) {
     </div>
     <div class="lib-item-actions">
       <button class="lib-btn lib-load-btn" data-id="${doc.id}">Load</button>
+      <button class="lib-btn lib-rename-btn" data-id="${doc.id}">Rename</button>
       <button class="lib-btn lib-del-btn"  data-id="${doc.id}">Delete</button>
     </div>`;
   li.querySelector('.lib-load-btn').addEventListener('click', () => loadPrd(doc.id, data.content));
+  li.querySelector('.lib-rename-btn').addEventListener('click', () => renamePrd(doc.id, data.title, li));
   li.querySelector('.lib-del-btn').addEventListener('click',  () => deletePrd(doc.id, li));
   return li;
 }
@@ -1007,6 +1064,21 @@ async function deletePrd(id, liEl) {
     const remaining = libraryList.querySelectorAll('.library-item').length;
     if (remaining === 0) libraryEmpty.hidden = false;
     libraryCount.textContent = remaining ? `${remaining} saved` : '';
+    setSyncDot('ok');
+    setTimeout(() => setSyncDot('idle'), 1500);
+  } catch (err) {
+    console.error(err);
+    setSyncDot('error');
+  }
+}
+
+async function renamePrd(id, currentTitle, liEl) {
+  const name = await showNameModal('Rename PRD', currentTitle);
+  if (!name) return;
+  setSyncDot('saving');
+  try {
+    await prdsRef(currentProjectId).doc(id).update({ title: name });
+    liEl.querySelector('.lib-item-title').textContent = name;
     setSyncDot('ok');
     setTimeout(() => setSyncDot('idle'), 1500);
   } catch (err) {

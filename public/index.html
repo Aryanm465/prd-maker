@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>PRD Maker</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
@@ -16,6 +17,7 @@
         <span class="brand-name">PRD Maker</span>
       </div>
       <div class="header-controls">
+        <button id="dark-mode-btn" class="ctrl-icon-btn" title="Toggle dark mode">&#9681;</button>
         <span id="status-dot" class="status-dot" data-status="empty" title="API key status"></span>
         <select id="model-select" class="ctrl-select">
           <option value="claude">Claude 4.6 Sonnet</option>
@@ -98,94 +100,107 @@
         </div>
 
         <!-- Rough Context -->
-        <div class="card">
+        <div class="card" data-card-id="rough-context-card">
           <div class="card-header">
             <span class="card-label">Rough Context / Notes</span>
             <span class="card-hint">optional</span>
+            <button class="card-collapse-btn" aria-expanded="true" aria-label="Collapse section">&#8963;</button>
           </div>
-          <textarea id="rough-context" placeholder="Paste any rough context, background, or ideas..."></textarea>
-          <div class="card-footer">
-            <span class="char-count" data-for="rough-context"></span>
-            <div class="import-row">
-              <button class="import-btn" data-action="file" data-target="rough-context">&#128206; Upload</button>
-              <input class="file-input" type="file" data-target="rough-context" accept=".pdf,.docx,.txt" />
-              <button class="import-btn" data-action="gdoc" data-target="rough-context">&#128196; Google Doc</button>
+          <div class="card-body">
+            <textarea id="rough-context" placeholder="Paste any rough context, background, or ideas..."></textarea>
+            <div class="card-footer">
+              <span class="char-count" data-for="rough-context"></span>
+              <div class="import-row">
+                <button class="import-btn" data-action="file" data-target="rough-context">&#128206; Upload</button>
+                <input class="file-input" type="file" data-target="rough-context" accept=".pdf,.docx,.txt" />
+                <button class="import-btn" data-action="gdoc" data-target="rough-context">&#128196; Google Doc</button>
+              </div>
             </div>
+            <div class="gdoc-row" data-for="rough-context" hidden>
+              <input type="url" class="gdoc-url-input" placeholder="Paste Google Doc URL..." />
+              <button class="gdoc-import-btn" data-target="rough-context">Import</button>
+            </div>
+            <span class="import-status" data-for="rough-context"></span>
           </div>
-          <div class="gdoc-row" data-for="rough-context" hidden>
-            <input type="url" class="gdoc-url-input" placeholder="Paste Google Doc URL..." />
-            <button class="gdoc-import-btn" data-target="rough-context">Import</button>
-          </div>
-          <span class="import-status" data-for="rough-context"></span>
         </div>
 
         <!-- Meeting Notes -->
-        <div class="card">
+        <div class="card" data-card-id="meeting-notes-card">
           <div class="card-header">
             <span class="card-label">Meeting Notes</span>
             <span class="card-hint">optional</span>
+            <button class="card-collapse-btn" aria-expanded="true" aria-label="Collapse section">&#8963;</button>
           </div>
-          <textarea id="meeting-notes" placeholder="Paste meeting notes, decisions, discussion points..."></textarea>
-          <div class="card-footer">
-            <span class="char-count" data-for="meeting-notes"></span>
-            <div class="import-row">
-              <button class="import-btn" data-action="file" data-target="meeting-notes">&#128206; Upload</button>
-              <input class="file-input" type="file" data-target="meeting-notes" accept=".pdf,.docx,.txt" />
-              <button class="import-btn" data-action="gdoc" data-target="meeting-notes">&#128196; Google Doc</button>
+          <div class="card-body">
+            <textarea id="meeting-notes" placeholder="Paste meeting notes, decisions, discussion points..."></textarea>
+            <div class="card-footer">
+              <span class="char-count" data-for="meeting-notes"></span>
+              <div class="import-row">
+                <button class="import-btn" data-action="file" data-target="meeting-notes">&#128206; Upload</button>
+                <input class="file-input" type="file" data-target="meeting-notes" accept=".pdf,.docx,.txt" />
+                <button class="import-btn" data-action="gdoc" data-target="meeting-notes">&#128196; Google Doc</button>
+              </div>
             </div>
+            <div class="gdoc-row" data-for="meeting-notes" hidden>
+              <input type="url" class="gdoc-url-input" placeholder="Paste Google Doc URL..." />
+              <button class="gdoc-import-btn" data-target="meeting-notes">Import</button>
+            </div>
+            <span class="import-status" data-for="meeting-notes"></span>
           </div>
-          <div class="gdoc-row" data-for="meeting-notes" hidden>
-            <input type="url" class="gdoc-url-input" placeholder="Paste Google Doc URL..." />
-            <button class="gdoc-import-btn" data-target="meeting-notes">Import</button>
-          </div>
-          <span class="import-status" data-for="meeting-notes"></span>
         </div>
 
         <!-- Action Items -->
-        <div class="card">
+        <div class="card" data-card-id="action-items-card">
           <div class="card-header">
             <span class="card-label">Action Items</span>
             <span class="card-hint">optional</span>
+            <button class="card-collapse-btn" aria-expanded="true" aria-label="Collapse section">&#8963;</button>
           </div>
-          <textarea id="action-items" placeholder="List action items, tasks, or requirements..."></textarea>
-          <div class="card-footer">
-            <span class="char-count" data-for="action-items"></span>
-            <div class="import-row">
-              <button class="import-btn" data-action="file" data-target="action-items">&#128206; Upload</button>
-              <input class="file-input" type="file" data-target="action-items" accept=".pdf,.docx,.txt" />
-              <button class="import-btn" data-action="gdoc" data-target="action-items">&#128196; Google Doc</button>
+          <div class="card-body">
+            <textarea id="action-items" placeholder="List action items, tasks, or requirements..."></textarea>
+            <div class="card-footer">
+              <span class="char-count" data-for="action-items"></span>
+              <div class="import-row">
+                <button class="import-btn" data-action="file" data-target="action-items">&#128206; Upload</button>
+                <input class="file-input" type="file" data-target="action-items" accept=".pdf,.docx,.txt" />
+                <button class="import-btn" data-action="gdoc" data-target="action-items">&#128196; Google Doc</button>
+              </div>
             </div>
+            <div class="gdoc-row" data-for="action-items" hidden>
+              <input type="url" class="gdoc-url-input" placeholder="Paste Google Doc URL..." />
+              <button class="gdoc-import-btn" data-target="action-items">Import</button>
+            </div>
+            <span class="import-status" data-for="action-items"></span>
           </div>
-          <div class="gdoc-row" data-for="action-items" hidden>
-            <input type="url" class="gdoc-url-input" placeholder="Paste Google Doc URL..." />
-            <button class="gdoc-import-btn" data-target="action-items">Import</button>
-          </div>
-          <span class="import-status" data-for="action-items"></span>
         </div>
 
         <!-- Voice Input -->
-        <div class="card">
+        <div class="card" data-card-id="voice-card">
           <div class="card-header">
             <span class="card-label">Voice Input</span>
             <span class="card-hint">optional</span>
+            <button class="card-collapse-btn" aria-expanded="true" aria-label="Collapse section">&#8963;</button>
           </div>
-          <p id="voice-model-hint" class="voice-model-hint"></p>
-          <div class="voice-controls">
-            <button id="record-btn" class="record-btn">
-              <span class="mic-icon">&#9679;</span>
-              <span class="record-label">Record</span>
-            </button>
-            <span id="voice-status" class="voice-status"></span>
+          <div class="card-body">
+            <p id="voice-model-hint" class="voice-model-hint"></p>
+            <div class="voice-controls">
+              <button id="record-btn" class="record-btn">
+                <span class="mic-icon">&#9679;</span>
+                <span class="record-label">Record</span>
+              </button>
+              <span id="voice-status" class="voice-status"></span>
+            </div>
+            <textarea id="transcribed-voice" placeholder="Transcribed voice will appear here — or type directly..."></textarea>
+            <span class="char-count" data-for="transcribed-voice"></span>
+            <p id="voice-unavailable" class="voice-unavailable" hidden>
+              Voice input requires Chrome or Edge (browser fallback only).
+            </p>
           </div>
-          <textarea id="transcribed-voice" placeholder="Transcribed voice will appear here — or type directly..."></textarea>
-          <span class="char-count" data-for="transcribed-voice"></span>
-          <p id="voice-unavailable" class="voice-unavailable" hidden>
-            Voice input requires Chrome or Edge (browser fallback only).
-          </p>
         </div>
 
         <!-- Generate -->
         <div class="generate-row">
+          <button id="clear-drafts-btn" class="clear-drafts-btn">Clear all</button>
           <button id="generate-btn" class="generate-btn">Generate PRD</button>
           <p id="input-error" class="input-error" hidden></p>
         </div>
@@ -196,6 +211,7 @@
       <section class="output-panel">
         <div class="output-header">
           <span class="output-title">Output</span>
+          <span id="word-count" class="word-count"></span>
           <div class="output-toolbar" id="output-toolbar" hidden>
             <div class="toggle-group">
               <button id="preview-btn" class="tgl active">Preview</button>
@@ -283,6 +299,7 @@
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
   <script src="app.js"></script>
 </body>
 </html>
