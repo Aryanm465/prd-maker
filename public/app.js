@@ -262,9 +262,8 @@ document.getElementById('clear-drafts-btn').addEventListener('click', () => {
   });
 });
 
-// Dark mode
-const prefersDark = localStorage.getItem('prd_theme') === 'dark' ||
-  (!localStorage.getItem('prd_theme') && window.matchMedia('(prefers-color-scheme: dark)').matches);
+// Dark mode — default is light
+const prefersDark = localStorage.getItem('prd_theme') === 'dark';
 if (prefersDark) document.documentElement.dataset.theme = 'dark';
 darkModeBtn.addEventListener('click', () => {
   const isDark = document.documentElement.dataset.theme === 'dark';

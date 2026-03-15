@@ -5,57 +5,69 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>PRD Maker</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="style.css" />
 </head>
-<body>
+<body class="bg-slate-50 text-slate-900 min-h-screen flex flex-col" style="font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; -webkit-font-smoothing: antialiased;">
 
   <!-- ── Top nav ── -->
-  <header>
-    <div class="header-inner">
-      <div class="header-brand">
-        <span class="brand-icon">&#9646;</span>
-        <span class="brand-name">PRD Maker</span>
+  <header class="sticky top-0 z-50 border-b border-slate-800" style="background: #0f172a">
+    <div class="header-inner max-w-screen-xl mx-auto px-6 h-14 flex items-center justify-between gap-4">
+      <div class="header-brand flex items-center gap-2 flex-shrink-0">
+        <div class="w-7 h-7 rounded-lg flex items-center justify-center" style="background: linear-gradient(135deg, #3b82f6, #2563eb)">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="1" y="1" width="5" height="5" rx="1" fill="white"/><rect x="8" y="1" width="5" height="5" rx="1" fill="white" opacity="0.7"/><rect x="1" y="8" width="5" height="5" rx="1" fill="white" opacity="0.7"/><rect x="8" y="8" width="5" height="5" rx="1" fill="white" opacity="0.4"/></svg>
+        </div>
+        <span class="brand-name text-white font-semibold text-sm tracking-tight">PRD Maker</span>
       </div>
-      <div class="header-controls">
-        <button id="dark-mode-btn" class="ctrl-icon-btn" title="Toggle dark mode">&#9681;</button>
+      <div class="header-controls flex items-center gap-2 flex-wrap">
+        <button id="dark-mode-btn" class="ctrl-icon-btn w-8 h-8 flex items-center justify-center rounded-md text-slate-400 hover:text-white hover:bg-slate-700 transition-colors text-base border-0 bg-transparent cursor-pointer" title="Toggle dark mode">&#9681;</button>
         <span id="status-dot" class="status-dot" data-status="empty" title="API key status"></span>
-        <select id="model-select" class="ctrl-select">
+        <select id="model-select" class="ctrl-select bg-slate-800 border border-slate-700 text-slate-200 rounded-md px-2 py-1.5 text-xs font-medium font-[inherit] cursor-pointer outline-none focus:border-blue-500 transition-colors">
           <option value="claude">Claude 4.6 Sonnet</option>
           <option value="openai">OpenAI GPT-4o</option>
-          <option value="gemini">Gemini 2.5 Flash</option>
+          <option value="gemini" selected>Gemini 2.5 Flash</option>
         </select>
-        <div class="ctrl-key-wrap">
-          <input id="api-key-input" type="password" class="ctrl-key-input" placeholder="API key" autocomplete="off" />
-          <button id="toggle-key-btn" class="ctrl-key-eye" title="Show/hide">&#128065;</button>
+        <div class="ctrl-key-wrap flex">
+          <input id="api-key-input" type="password" class="ctrl-key-input bg-slate-800 border border-slate-700 border-r-0 rounded-l-md text-slate-200 px-2.5 py-1.5 text-xs font-[inherit] w-44 outline-none focus:border-blue-500 transition-colors placeholder-slate-500" placeholder="API key" autocomplete="off" />
+          <button id="toggle-key-btn" class="ctrl-key-eye bg-slate-800 border border-slate-700 rounded-r-md text-slate-500 hover:text-slate-200 px-2 cursor-pointer transition-colors text-sm" title="Show/hide">&#128065;</button>
         </div>
-        <span id="status-label" class="status-label">No key</span>
+        <span id="status-label" class="status-label text-xs text-slate-500 whitespace-nowrap">No key</span>
       </div>
     </div>
   </header>
 
   <!-- ── Hero / info strip ── -->
-  <div class="hero">
-    <div class="hero-inner">
-      <h1 class="hero-title">Turn raw notes into a structured PRD</h1>
-      <p class="hero-sub">Paste what you have — meeting notes, rough ideas, action items, voice transcripts — and the AI drafts a complete Product Requirements Document. <strong>Every input section is optional.</strong></p>
-      <div class="hero-steps">
-        <div class="step"><span class="step-num">1</span><span>Add any notes you have</span></div>
-        <div class="step-arrow">&#8594;</div>
-        <div class="step"><span class="step-num">2</span><span>Choose a PRD style</span></div>
-        <div class="step-arrow">&#8594;</div>
-        <div class="step"><span class="step-num">3</span><span>Generate, edit &amp; export</span></div>
+  <div class="hero bg-gradient-to-br from-indigo-50 via-white to-white border-b border-slate-100">
+    <div class="hero-inner max-w-screen-xl mx-auto px-6 py-10">
+      <h1 class="hero-title text-2xl font-bold text-slate-900 tracking-tight mb-2">Turn raw notes into a structured PRD</h1>
+      <p class="hero-sub text-sm text-slate-500 max-w-xl leading-relaxed mb-6">Paste what you have — meeting notes, rough ideas, action items, voice transcripts — and the AI drafts a complete Product Requirements Document. <strong class="text-slate-700 font-semibold">Every input section is optional.</strong></p>
+      <div class="hero-steps flex items-center gap-3 flex-wrap">
+        <div class="step flex items-center gap-2">
+          <span class="step-num w-6 h-6 rounded-full bg-blue-600 text-white text-xs font-bold flex items-center justify-center flex-shrink-0">1</span>
+          <span class="text-sm text-slate-600 font-medium">Add any notes you have</span>
+        </div>
+        <div class="step-arrow text-slate-300 text-lg font-light">&#8594;</div>
+        <div class="step flex items-center gap-2">
+          <span class="step-num w-6 h-6 rounded-full bg-blue-600 text-white text-xs font-bold flex items-center justify-center flex-shrink-0">2</span>
+          <span class="text-sm text-slate-600 font-medium">Choose a PRD style</span>
+        </div>
+        <div class="step-arrow text-slate-300 text-lg font-light">&#8594;</div>
+        <div class="step flex items-center gap-2">
+          <span class="step-num w-6 h-6 rounded-full bg-blue-600 text-white text-xs font-bold flex items-center justify-center flex-shrink-0">3</span>
+          <span class="text-sm text-slate-600 font-medium">Generate, edit &amp; export</span>
+        </div>
       </div>
     </div>
   </div>
 
   <!-- ── Project bar ── -->
-  <div id="project-bar" class="project-bar" hidden>
-    <div class="project-bar-inner">
-      <span class="project-bar-label">Project</span>
-      <div class="project-switcher">
-        <button id="project-name-btn" class="project-name-btn">
+  <div id="project-bar" class="project-bar bg-white border-b border-slate-100 shadow-sm" hidden>
+    <div class="project-bar-inner max-w-screen-xl mx-auto px-6 py-2 flex items-center gap-3">
+      <span class="project-bar-label text-xs text-slate-400 whitespace-nowrap font-medium uppercase tracking-wide">Project</span>
+      <div class="project-switcher relative">
+        <button id="project-name-btn" class="project-name-btn flex items-center gap-1.5 bg-transparent border border-transparent hover:border-slate-200 hover:bg-slate-50 rounded-md px-2.5 py-1 text-sm font-semibold text-slate-800 cursor-pointer transition-all font-[inherit]">
           <span id="current-project-name">Loading…</span>
-          <span class="project-caret">&#9660;</span>
+          <span class="project-caret text-slate-400 text-xs">&#9660;</span>
         </button>
         <div id="project-dropdown" class="project-dropdown" hidden>
           <ul id="project-list" class="project-list"></ul>
@@ -68,160 +80,162 @@
     </div>
   </div>
 
-  <main>
-    <div class="layout">
+  <main class="max-w-screen-xl mx-auto px-6 py-6 flex-1 w-full">
+    <div class="layout grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
 
       <!-- ── LEFT: Inputs ── -->
-      <section class="inputs-panel">
+      <section class="inputs-panel flex flex-col gap-3">
 
         <!-- PRD Style card -->
-        <div class="card settings-card">
-          <div class="card-header">
-            <span class="card-label">PRD Style</span>
-            <span class="card-hint">Choose a format or write your own instructions</span>
+        <div class="card settings-card rounded-xl border border-slate-200 bg-white shadow-sm p-4 flex flex-col gap-3 hover:shadow-md hover:-translate-y-px transition-all duration-200 focus-within:border-blue-400">
+          <div class="card-header flex items-center gap-2">
+            <span class="card-label text-sm font-semibold text-slate-800">PRD Style</span>
+            <span class="card-hint text-xs text-slate-400 ml-1">Choose a format or write your own instructions</span>
           </div>
-          <div class="prd-type-pills" id="prd-type-pills">
-            <button class="prd-pill active" data-type="standard">Standard</button>
-            <button class="prd-pill" data-type="lean">Lean / MVP</button>
-            <button class="prd-pill" data-type="enterprise">Enterprise</button>
-            <button class="prd-pill" data-type="technical">Technical Spec</button>
-            <button class="prd-pill" data-type="onepager">One-Pager</button>
-            <button class="prd-pill" data-type="userstory">User Stories</button>
-            <button class="prd-pill" data-type="feature">Feature PRD</button>
-            <button class="prd-pill" data-type="custom">Custom</button>
+          <div class="prd-type-pills flex flex-wrap gap-1.5" id="prd-type-pills">
+            <button class="prd-pill active px-3 py-1 text-xs rounded-full border font-medium transition-all cursor-pointer" data-type="standard">Standard</button>
+            <button class="prd-pill px-3 py-1 text-xs rounded-full border font-medium transition-all cursor-pointer" data-type="lean">Lean / MVP</button>
+            <button class="prd-pill px-3 py-1 text-xs rounded-full border font-medium transition-all cursor-pointer" data-type="enterprise">Enterprise</button>
+            <button class="prd-pill px-3 py-1 text-xs rounded-full border font-medium transition-all cursor-pointer" data-type="technical">Technical Spec</button>
+            <button class="prd-pill px-3 py-1 text-xs rounded-full border font-medium transition-all cursor-pointer" data-type="onepager">One-Pager</button>
+            <button class="prd-pill px-3 py-1 text-xs rounded-full border font-medium transition-all cursor-pointer" data-type="userstory">User Stories</button>
+            <button class="prd-pill px-3 py-1 text-xs rounded-full border font-medium transition-all cursor-pointer" data-type="feature">Feature PRD</button>
+            <button class="prd-pill px-3 py-1 text-xs rounded-full border font-medium transition-all cursor-pointer" data-type="custom">Custom</button>
           </div>
-          <div class="prompt-editor-wrap">
-            <label class="prompt-label" for="system-prompt">
+          <div class="prompt-editor-wrap flex flex-col gap-1.5">
+            <label class="prompt-label flex items-center justify-between text-xs text-slate-500 font-medium" for="system-prompt">
               System prompt
-              <button id="reset-prompt-btn" class="reset-btn" title="Reset to selected style">&#8635; Reset</button>
+              <button id="reset-prompt-btn" class="reset-btn bg-transparent border-0 text-slate-400 hover:text-blue-600 text-xs cursor-pointer px-1.5 py-0.5 rounded transition-colors font-[inherit]" title="Reset to selected style">&#8635; Reset</button>
             </label>
-            <textarea id="system-prompt" class="prompt-textarea" spellcheck="false"></textarea>
+            <textarea id="system-prompt" class="prompt-textarea w-full border border-slate-200 rounded-lg px-3 py-2.5 text-xs bg-slate-50 focus:bg-white focus:border-blue-400 outline-none resize-y transition-colors text-slate-700 leading-relaxed" style="min-height:140px; font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;" spellcheck="false"></textarea>
           </div>
         </div>
 
         <!-- Rough Context -->
-        <div class="card" data-card-id="rough-context-card">
-          <div class="card-header">
-            <span class="card-label">Rough Context / Notes</span>
-            <span class="card-hint">optional</span>
-            <button class="card-collapse-btn" aria-expanded="true" aria-label="Collapse section">&#8963;</button>
+        <div class="card rounded-xl border border-slate-200 bg-white shadow-sm p-4 flex flex-col gap-3 hover:shadow-md hover:-translate-y-px transition-all duration-200 focus-within:border-blue-400" data-card-id="rough-context-card">
+          <div class="card-header flex items-center gap-2">
+            <span class="card-label text-sm font-semibold text-slate-800">Rough Context / Notes</span>
+            <span class="card-hint text-xs text-slate-400 ml-1">optional</span>
+            <button class="card-collapse-btn ml-auto bg-transparent border-0 text-slate-400 hover:text-blue-500 text-xs cursor-pointer px-1 py-0.5 rounded leading-none transition-all" aria-expanded="true" aria-label="Collapse section">&#8963;</button>
           </div>
-          <div class="card-body">
-            <textarea id="rough-context" placeholder="Paste any rough context, background, or ideas..."></textarea>
-            <div class="card-footer">
-              <span class="char-count" data-for="rough-context"></span>
-              <div class="import-row">
-                <button class="import-btn" data-action="file" data-target="rough-context">&#128206; Upload</button>
-                <input class="file-input" type="file" data-target="rough-context" accept=".pdf,.docx,.txt" />
-                <button class="import-btn" data-action="gdoc" data-target="rough-context">&#128196; Google Doc</button>
+          <div class="card-body flex flex-col gap-2">
+            <textarea id="rough-context" class="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm bg-slate-50 focus:bg-white focus:border-blue-400 outline-none resize-y transition-colors text-slate-700 leading-relaxed placeholder-slate-400" style="min-height:100px" placeholder="Paste any rough context, background, or ideas..."></textarea>
+            <div class="card-footer flex items-center justify-between gap-2 flex-wrap">
+              <span class="char-count text-xs text-slate-400" data-for="rough-context"></span>
+              <div class="import-row flex gap-1.5">
+                <button class="import-btn inline-flex items-center gap-1 px-2.5 py-1 border border-slate-200 rounded-md bg-white text-slate-500 text-xs font-medium hover:border-blue-400 hover:text-blue-600 hover:bg-blue-50 transition-all cursor-pointer font-[inherit] whitespace-nowrap" data-action="file" data-target="rough-context">&#128206; Upload</button>
+                <input class="file-input hidden" type="file" data-target="rough-context" accept=".pdf,.docx,.txt" />
+                <button class="import-btn inline-flex items-center gap-1 px-2.5 py-1 border border-slate-200 rounded-md bg-white text-slate-500 text-xs font-medium hover:border-blue-400 hover:text-blue-600 hover:bg-blue-50 transition-all cursor-pointer font-[inherit] whitespace-nowrap" data-action="gdoc" data-target="rough-context">&#128196; Google Doc</button>
               </div>
             </div>
-            <div class="gdoc-row" data-for="rough-context" hidden>
-              <input type="url" class="gdoc-url-input" placeholder="Paste Google Doc URL..." />
-              <button class="gdoc-import-btn" data-target="rough-context">Import</button>
+            <div class="gdoc-row flex gap-2 items-center" data-for="rough-context" hidden>
+              <input type="url" class="gdoc-url-input flex-1 border border-slate-200 rounded-md px-3 py-1.5 text-sm bg-slate-50 focus:bg-white focus:border-blue-400 outline-none transition-colors text-slate-700 font-[inherit]" placeholder="Paste Google Doc URL..." />
+              <button class="gdoc-import-btn px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white border-0 rounded-md text-sm font-medium cursor-pointer whitespace-nowrap transition-colors font-[inherit]" data-target="rough-context">Import</button>
             </div>
-            <span class="import-status" data-for="rough-context"></span>
+            <span class="import-status text-xs min-h-[1em] text-slate-500" data-for="rough-context"></span>
           </div>
         </div>
 
         <!-- Meeting Notes -->
-        <div class="card" data-card-id="meeting-notes-card">
-          <div class="card-header">
-            <span class="card-label">Meeting Notes</span>
-            <span class="card-hint">optional</span>
-            <button class="card-collapse-btn" aria-expanded="true" aria-label="Collapse section">&#8963;</button>
+        <div class="card rounded-xl border border-slate-200 bg-white shadow-sm p-4 flex flex-col gap-3 hover:shadow-md hover:-translate-y-px transition-all duration-200 focus-within:border-blue-400" data-card-id="meeting-notes-card">
+          <div class="card-header flex items-center gap-2">
+            <span class="card-label text-sm font-semibold text-slate-800">Meeting Notes</span>
+            <span class="card-hint text-xs text-slate-400 ml-1">optional</span>
+            <button class="card-collapse-btn ml-auto bg-transparent border-0 text-slate-400 hover:text-blue-500 text-xs cursor-pointer px-1 py-0.5 rounded leading-none transition-all" aria-expanded="true" aria-label="Collapse section">&#8963;</button>
           </div>
-          <div class="card-body">
-            <textarea id="meeting-notes" placeholder="Paste meeting notes, decisions, discussion points..."></textarea>
-            <div class="card-footer">
-              <span class="char-count" data-for="meeting-notes"></span>
-              <div class="import-row">
-                <button class="import-btn" data-action="file" data-target="meeting-notes">&#128206; Upload</button>
-                <input class="file-input" type="file" data-target="meeting-notes" accept=".pdf,.docx,.txt" />
-                <button class="import-btn" data-action="gdoc" data-target="meeting-notes">&#128196; Google Doc</button>
+          <div class="card-body flex flex-col gap-2">
+            <textarea id="meeting-notes" class="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm bg-slate-50 focus:bg-white focus:border-blue-400 outline-none resize-y transition-colors text-slate-700 leading-relaxed placeholder-slate-400" style="min-height:100px" placeholder="Paste meeting notes, decisions, discussion points..."></textarea>
+            <div class="card-footer flex items-center justify-between gap-2 flex-wrap">
+              <span class="char-count text-xs text-slate-400" data-for="meeting-notes"></span>
+              <div class="import-row flex gap-1.5">
+                <button class="import-btn inline-flex items-center gap-1 px-2.5 py-1 border border-slate-200 rounded-md bg-white text-slate-500 text-xs font-medium hover:border-blue-400 hover:text-blue-600 hover:bg-blue-50 transition-all cursor-pointer font-[inherit] whitespace-nowrap" data-action="file" data-target="meeting-notes">&#128206; Upload</button>
+                <input class="file-input hidden" type="file" data-target="meeting-notes" accept=".pdf,.docx,.txt" />
+                <button class="import-btn inline-flex items-center gap-1 px-2.5 py-1 border border-slate-200 rounded-md bg-white text-slate-500 text-xs font-medium hover:border-blue-400 hover:text-blue-600 hover:bg-blue-50 transition-all cursor-pointer font-[inherit] whitespace-nowrap" data-action="gdoc" data-target="meeting-notes">&#128196; Google Doc</button>
               </div>
             </div>
-            <div class="gdoc-row" data-for="meeting-notes" hidden>
-              <input type="url" class="gdoc-url-input" placeholder="Paste Google Doc URL..." />
-              <button class="gdoc-import-btn" data-target="meeting-notes">Import</button>
+            <div class="gdoc-row flex gap-2 items-center" data-for="meeting-notes" hidden>
+              <input type="url" class="gdoc-url-input flex-1 border border-slate-200 rounded-md px-3 py-1.5 text-sm bg-slate-50 focus:bg-white focus:border-blue-400 outline-none transition-colors text-slate-700 font-[inherit]" placeholder="Paste Google Doc URL..." />
+              <button class="gdoc-import-btn px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white border-0 rounded-md text-sm font-medium cursor-pointer whitespace-nowrap transition-colors font-[inherit]" data-target="meeting-notes">Import</button>
             </div>
-            <span class="import-status" data-for="meeting-notes"></span>
+            <span class="import-status text-xs min-h-[1em] text-slate-500" data-for="meeting-notes"></span>
           </div>
         </div>
 
         <!-- Action Items -->
-        <div class="card" data-card-id="action-items-card">
-          <div class="card-header">
-            <span class="card-label">Action Items</span>
-            <span class="card-hint">optional</span>
-            <button class="card-collapse-btn" aria-expanded="true" aria-label="Collapse section">&#8963;</button>
+        <div class="card rounded-xl border border-slate-200 bg-white shadow-sm p-4 flex flex-col gap-3 hover:shadow-md hover:-translate-y-px transition-all duration-200 focus-within:border-blue-400" data-card-id="action-items-card">
+          <div class="card-header flex items-center gap-2">
+            <span class="card-label text-sm font-semibold text-slate-800">Action Items</span>
+            <span class="card-hint text-xs text-slate-400 ml-1">optional</span>
+            <button class="card-collapse-btn ml-auto bg-transparent border-0 text-slate-400 hover:text-blue-500 text-xs cursor-pointer px-1 py-0.5 rounded leading-none transition-all" aria-expanded="true" aria-label="Collapse section">&#8963;</button>
           </div>
-          <div class="card-body">
-            <textarea id="action-items" placeholder="List action items, tasks, or requirements..."></textarea>
-            <div class="card-footer">
-              <span class="char-count" data-for="action-items"></span>
-              <div class="import-row">
-                <button class="import-btn" data-action="file" data-target="action-items">&#128206; Upload</button>
-                <input class="file-input" type="file" data-target="action-items" accept=".pdf,.docx,.txt" />
-                <button class="import-btn" data-action="gdoc" data-target="action-items">&#128196; Google Doc</button>
+          <div class="card-body flex flex-col gap-2">
+            <textarea id="action-items" class="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm bg-slate-50 focus:bg-white focus:border-blue-400 outline-none resize-y transition-colors text-slate-700 leading-relaxed placeholder-slate-400" style="min-height:100px" placeholder="List action items, tasks, or requirements..."></textarea>
+            <div class="card-footer flex items-center justify-between gap-2 flex-wrap">
+              <span class="char-count text-xs text-slate-400" data-for="action-items"></span>
+              <div class="import-row flex gap-1.5">
+                <button class="import-btn inline-flex items-center gap-1 px-2.5 py-1 border border-slate-200 rounded-md bg-white text-slate-500 text-xs font-medium hover:border-blue-400 hover:text-blue-600 hover:bg-blue-50 transition-all cursor-pointer font-[inherit] whitespace-nowrap" data-action="file" data-target="action-items">&#128206; Upload</button>
+                <input class="file-input hidden" type="file" data-target="action-items" accept=".pdf,.docx,.txt" />
+                <button class="import-btn inline-flex items-center gap-1 px-2.5 py-1 border border-slate-200 rounded-md bg-white text-slate-500 text-xs font-medium hover:border-blue-400 hover:text-blue-600 hover:bg-blue-50 transition-all cursor-pointer font-[inherit] whitespace-nowrap" data-action="gdoc" data-target="action-items">&#128196; Google Doc</button>
               </div>
             </div>
-            <div class="gdoc-row" data-for="action-items" hidden>
-              <input type="url" class="gdoc-url-input" placeholder="Paste Google Doc URL..." />
-              <button class="gdoc-import-btn" data-target="action-items">Import</button>
+            <div class="gdoc-row flex gap-2 items-center" data-for="action-items" hidden>
+              <input type="url" class="gdoc-url-input flex-1 border border-slate-200 rounded-md px-3 py-1.5 text-sm bg-slate-50 focus:bg-white focus:border-blue-400 outline-none transition-colors text-slate-700 font-[inherit]" placeholder="Paste Google Doc URL..." />
+              <button class="gdoc-import-btn px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white border-0 rounded-md text-sm font-medium cursor-pointer whitespace-nowrap transition-colors font-[inherit]" data-target="action-items">Import</button>
             </div>
-            <span class="import-status" data-for="action-items"></span>
+            <span class="import-status text-xs min-h-[1em] text-slate-500" data-for="action-items"></span>
           </div>
         </div>
 
         <!-- Voice Input -->
-        <div class="card" data-card-id="voice-card">
-          <div class="card-header">
-            <span class="card-label">Voice Input</span>
-            <span class="card-hint">optional</span>
-            <button class="card-collapse-btn" aria-expanded="true" aria-label="Collapse section">&#8963;</button>
+        <div class="card rounded-xl border border-slate-200 bg-white shadow-sm p-4 flex flex-col gap-3 hover:shadow-md hover:-translate-y-px transition-all duration-200 focus-within:border-blue-400" data-card-id="voice-card">
+          <div class="card-header flex items-center gap-2">
+            <span class="card-label text-sm font-semibold text-slate-800">Voice Input</span>
+            <span class="card-hint text-xs text-slate-400 ml-1">optional</span>
+            <button class="card-collapse-btn ml-auto bg-transparent border-0 text-slate-400 hover:text-blue-500 text-xs cursor-pointer px-1 py-0.5 rounded leading-none transition-all" aria-expanded="true" aria-label="Collapse section">&#8963;</button>
           </div>
-          <div class="card-body">
+          <div class="card-body flex flex-col gap-2">
             <p id="voice-model-hint" class="voice-model-hint"></p>
-            <div class="voice-controls">
-              <button id="record-btn" class="record-btn">
-                <span class="mic-icon">&#9679;</span>
+            <div class="voice-controls flex items-center gap-3">
+              <button id="record-btn" class="record-btn flex items-center gap-2 px-4 py-2 border border-slate-300 rounded-full bg-white text-slate-600 text-sm font-medium hover:border-red-400 hover:text-red-500 cursor-pointer transition-all font-[inherit]">
+                <span class="mic-icon text-xs">&#9679;</span>
                 <span class="record-label">Record</span>
               </button>
-              <span id="voice-status" class="voice-status"></span>
+              <span id="voice-status" class="voice-status text-xs text-slate-400 italic"></span>
             </div>
-            <textarea id="transcribed-voice" placeholder="Transcribed voice will appear here — or type directly..."></textarea>
-            <span class="char-count" data-for="transcribed-voice"></span>
-            <p id="voice-unavailable" class="voice-unavailable" hidden>
+            <textarea id="transcribed-voice" class="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm bg-slate-50 focus:bg-white focus:border-blue-400 outline-none resize-y transition-colors text-slate-700 leading-relaxed placeholder-slate-400" style="min-height:100px" placeholder="Transcribed voice will appear here — or type directly..."></textarea>
+            <span class="char-count text-xs text-slate-400" data-for="transcribed-voice"></span>
+            <p id="voice-unavailable" class="voice-unavailable text-xs text-amber-600 px-3 py-2 bg-amber-50 border border-amber-200 rounded-lg" hidden>
               Voice input requires Chrome or Edge (browser fallback only).
             </p>
           </div>
         </div>
 
         <!-- Generate -->
-        <div class="generate-row">
-          <button id="clear-drafts-btn" class="clear-drafts-btn">Clear all</button>
-          <button id="generate-btn" class="generate-btn">Generate PRD</button>
-          <p id="input-error" class="input-error" hidden></p>
+        <div class="generate-row flex flex-col gap-2 mt-1">
+          <button id="clear-drafts-btn" class="clear-drafts-btn px-4 py-2.5 text-sm font-medium border border-slate-300 rounded-xl bg-white text-slate-500 hover:border-red-300 hover:text-red-500 hover:bg-red-50 cursor-pointer transition-all font-[inherit]">Clear all</button>
+          <button id="generate-btn" class="generate-btn w-full py-3 rounded-xl font-semibold text-white text-base tracking-tight shadow-md cursor-pointer border-0 font-[inherit] transition-all hover:-translate-y-0.5 active:translate-y-0 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none" style="background: linear-gradient(135deg, #2563eb, #1d4ed8); box-shadow: 0 4px 14px rgba(37,99,235,0.35)">Generate PRD</button>
+          <p id="input-error" class="input-error text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg px-3 py-2" hidden></p>
         </div>
 
       </section>
 
       <!-- ── RIGHT: Output ── -->
-      <section class="output-panel">
-        <div class="output-header">
-          <span class="output-title">Output</span>
-          <span id="word-count" class="word-count"></span>
-          <div class="output-toolbar" id="output-toolbar" hidden>
-            <div class="toggle-group">
-              <button id="preview-btn" class="tgl active">Preview</button>
-              <button id="edit-btn"    class="tgl">Edit</button>
+      <section class="output-panel rounded-xl border border-slate-200 bg-white shadow-sm sticky top-20 flex flex-col" style="max-height: calc(100vh - 5.5rem)">
+
+        <!-- Output header bar -->
+        <div class="output-header border-b border-slate-100 px-4 py-3 flex items-center gap-2 flex-shrink-0 flex-wrap">
+          <span class="output-title text-sm font-semibold text-slate-800">Output</span>
+          <span id="word-count" class="word-count text-xs text-slate-400 ml-1"></span>
+          <div class="output-toolbar flex items-center gap-1.5 flex-wrap ml-auto" id="output-toolbar" hidden>
+            <div class="toggle-group flex border border-slate-200 rounded-md overflow-hidden">
+              <button id="preview-btn" class="tgl active px-3 py-1.5 border-0 bg-white text-slate-500 text-xs font-medium cursor-pointer hover:bg-blue-50 hover:text-blue-600 transition-all font-[inherit]">Preview</button>
+              <button id="edit-btn" class="tgl px-3 py-1.5 border-0 border-l border-slate-200 bg-white text-slate-500 text-xs font-medium cursor-pointer hover:bg-blue-50 hover:text-blue-600 transition-all font-[inherit]">Edit</button>
             </div>
-            <button id="save-prd-btn" class="tool-btn save-btn" hidden>Save</button>
-            <button id="library-toggle-btn" class="tool-btn" hidden>Library</button>
-            <button id="copy-btn" class="tool-btn">Copy</button>
-            <div class="export-wrap">
-              <button id="export-btn" class="tool-btn export-trigger">Export &#9660;</button>
+            <button id="save-prd-btn" class="tool-btn save-btn px-3 py-1.5 text-xs font-medium rounded-md border border-slate-200 bg-white text-slate-600 hover:bg-slate-50 cursor-pointer transition-all font-[inherit] inline-flex items-center gap-1 whitespace-nowrap" hidden>Save</button>
+            <button id="library-toggle-btn" class="tool-btn px-3 py-1.5 text-xs font-medium rounded-md border border-slate-200 bg-white text-slate-600 hover:bg-slate-50 cursor-pointer transition-all font-[inherit] inline-flex items-center gap-1 whitespace-nowrap" hidden>Library</button>
+            <button id="copy-btn" class="tool-btn px-3 py-1.5 text-xs font-medium rounded-md border border-slate-200 bg-white text-slate-600 hover:bg-slate-50 cursor-pointer transition-all font-[inherit] inline-flex items-center gap-1 whitespace-nowrap">Copy</button>
+            <div class="export-wrap relative">
+              <button id="export-btn" class="tool-btn export-trigger px-3 py-1.5 text-xs font-medium rounded-md border border-slate-200 bg-white text-slate-600 hover:bg-slate-50 cursor-pointer transition-all font-[inherit] inline-flex items-center gap-1 whitespace-nowrap">Export &#9660;</button>
               <ul class="export-menu" id="export-menu" hidden>
                 <li data-export="md">Markdown (.md)</li>
                 <li data-export="html">HTML file</li>
@@ -232,30 +246,33 @@
           </div>
         </div>
 
-        <div id="output-area" class="output-area">
-          <div class="output-placeholder">
-            <p class="ph-title">Your PRD will appear here</p>
-            <p class="ph-sub">Fill in any input on the left and click <strong>Generate PRD</strong>.<br/>You don't need to fill every section — add what you have.</p>
+        <div id="output-area" class="output-area flex-1 overflow-y-auto px-4 py-4" style="min-height:280px; max-height:60vh">
+          <div class="output-placeholder flex flex-col items-center justify-center h-full text-center gap-3" style="min-height:240px">
+            <div class="w-12 h-12 rounded-xl bg-slate-100 flex items-center justify-center mb-1">
+              <svg width="22" height="22" viewBox="0 0 22 22" fill="none"><path d="M4 6h14M4 10h14M4 14h8" stroke="#94a3b8" stroke-width="2" stroke-linecap="round"/></svg>
+            </div>
+            <p class="ph-title text-sm font-semibold text-slate-500">Your PRD will appear here</p>
+            <p class="ph-sub text-xs text-slate-400 leading-relaxed max-w-xs">Fill in any input on the left and click <strong class="text-slate-500 font-semibold">Generate PRD</strong>.<br/>You don't need to fill every section — add what you have.</p>
           </div>
         </div>
 
-        <textarea id="edit-textarea" class="edit-textarea" hidden spellcheck="true"></textarea>
+        <textarea id="edit-textarea" class="edit-textarea flex-1 w-full border-0 border-t border-slate-100 px-4 py-4 text-sm bg-slate-50 outline-none resize-y text-slate-700 leading-relaxed" style="min-height:280px; max-height:60vh; font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;" hidden spellcheck="true"></textarea>
 
-        <div id="loading" class="loading" hidden>
-          <div class="spinner"></div>
+        <div id="loading" class="loading flex items-center justify-center gap-3 px-4 py-8 text-sm text-slate-500 flex-shrink-0" hidden>
+          <div class="spinner w-5 h-5 border-2 border-slate-200 border-t-blue-500 rounded-full flex-shrink-0" style="animation: spin 0.7s linear infinite"></div>
           <span>Generating with <span id="loading-provider">Claude</span>…</span>
         </div>
 
-        <div id="output-error" class="output-error" hidden></div>
+        <div id="output-error" class="output-error bg-red-50 border border-red-200 rounded-lg mx-4 mb-4 px-3 py-2.5 text-sm text-red-700 flex-shrink-0" hidden></div>
 
         <!-- PRD Library (Firestore-backed) -->
         <div id="library-panel" class="library-panel" hidden>
-          <div class="library-panel-header">
-            <span class="library-panel-title">Saved PRDs</span>
-            <span id="library-count" class="library-count"></span>
+          <div class="library-panel-header flex items-baseline justify-between mb-2 px-4 pt-3">
+            <span class="library-panel-title text-sm font-semibold text-slate-800">Saved PRDs</span>
+            <span id="library-count" class="library-count text-xs text-slate-400"></span>
           </div>
-          <ul id="library-list" class="library-list"></ul>
-          <p id="library-empty" class="library-empty" hidden>No saved PRDs in this project yet.<br/>Generate one and click <strong>Save</strong>.</p>
+          <ul id="library-list" class="library-list px-4 pb-3"></ul>
+          <p id="library-empty" class="library-empty text-xs text-slate-400 text-center py-4 px-4 leading-relaxed" hidden>No saved PRDs in this project yet.<br/>Generate one and click <strong class="font-semibold">Save</strong>.</p>
         </div>
 
       </section>
@@ -263,8 +280,8 @@
     </div>
   </main>
 
-  <footer>
-    <span>Powered by <strong id="footer-provider">Claude 4.6 Sonnet</strong></span>
+  <footer class="text-center px-4 py-4 text-xs text-slate-400 border-t border-slate-100 bg-white mt-auto">
+    <span>Powered by <strong id="footer-provider" class="text-slate-500 font-semibold">Claude 4.6 Sonnet</strong></span>
   </footer>
 
   <!-- PDF.js and mammoth for client-side file parsing. Keep versions in sync. -->
