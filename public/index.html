@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PRD Maker</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ── Top nav ── -->
+  <header>
+    <div class="header-inner">
+      <div class="header-brand">
+        <span class="brand-icon">&#9646;</span>
+        <span class="brand-name">PRD Maker</span>
+      </div>
+      <div class="header-controls">
+        <span id="status-dot" class="status-dot" data-status="empty" title="API key status"></span>
+        <select id="model-select" class="ctrl-select">
+          <option value="claude">Claude 4.6 Sonnet</option>
+          <option value="openai">OpenAI GPT-4o</option>
+          <option value="gemini">Gemini 2.5 Flash</option>
+        </select>
+        <div class="ctrl-key-wrap">
+          <input id="api-key-input" type="password" class="ctrl-key-input" placeholder="API key" autocomplete="off" />
+          <button id="toggle-key-btn" class="ctrl-key-eye" title="Show/hide">&#128065;</button>
+        </div>
+        <span id="status-label" class="status-label">No key</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- ── Hero / info strip ── -->
+  <div class="hero">
+    <div class="hero-inner">
+      <h1 class="hero-title">Turn raw notes into a structured PRD</h1>
+      <p class="hero-sub">Paste what you have — meeting notes, rough ideas, action items, voice transcripts — and the AI drafts a complete Product Requirements Document. <strong>Every input section is optional.</strong></p>
+      <div class="hero-steps">
+        <div class="step"><span class="step-num">1</span><span>Add any notes you have</span></div>
+        <div class="step-arrow">&#8594;</div>
+        <div class="step"><span class="step-num">2</span><span>Choose a PRD style</span></div>
+        <div class="step-arrow">&#8594;</div>
+        <div class="step"><span class="step-num">3</span><span>Generate, edit &amp; export</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Project bar ── -->
+  <div id="project-bar" class="project-bar" hidden>
+    <div class="project-bar-inner">
+      <span class="project-bar-label">Project</span>
+      <div class="project-switcher">
+        <button id="project-name-btn" class="project-name-btn">
+          <span id="current-project-name">Loading…</span>
+          <span class="project-caret">&#9660;</span>
+        </button>
+        <div id="project-dropdown" class="project-dropdown" hidden>
+          <ul id="project-list" class="project-list"></ul>
+          <div class="project-dropdown-footer">
+            <button id="new-project-btn" class="project-footer-btn">+ New project</button>
+          </div>
+        </div>
+      </div>
+      <span id="sync-dot" class="sync-dot" data-status="idle" title="Sync status"></span>
+    </div>
+  </div>
+
+  <main>
+    <div class="layout">
+
+      <!-- ── LEFT: Inputs ── -->
+      <section class="inputs-panel">
+
+        <!-- PRD Style card -->
+        <div class="card settings-card">
+          <div class="card-header">
+            <span class="card-label">PRD Style</span>
+            <span class="card-hint">Choose a format or write your own instructions</span>
+          </div>
+          <div class="prd-type-pills" id="prd-type-pills">
+            <button class="prd-pill active" data-type="standard">Standard</button>
+            <button class="prd-pill" data-type="lean">Lean / MVP</button>
+            <button class="prd-pill" data-type="enterprise">Enterprise</button>
+            <button class="prd-pill" data-type="technical">Technical Spec</button>
+            <button class="prd-pill" data-type="onepager">One-Pager</button>
+            <button class="prd-pill" data-type="userstory">User Stories</button>
+            <button class="prd-pill" data-type="feature">Feature PRD</button>
+            <button class="prd-pill" data-type="custom">Custom</button>
+          </div>
+          <div class="prompt-editor-wrap">
+            <label class="prompt-label" for="system-prompt">
+              System prompt
+              <button id="reset-prompt-btn" class="reset-btn" title="Reset to selected style">&#8635; Reset</button>
+            </label>
+            <textarea id="system-prompt" class="prompt-textarea" spellcheck="false"></textarea>
+          </div>
+        </div>
+
+        <!-- Rough Context -->
+        <div class="card">
+          <div class="card-header">
+            <span class="card-label">Rough Context / Notes</span>
+            <span class="card-hint">optional</span>
+          </div>
+          <textarea id="rough-context" placeholder="Paste any rough context, background, or ideas..."></textarea>
+          <div class="card-footer">
+            <span class="char-count" data-for="rough-context"></span>
+            <div class="import-row">
+              <button class="import-btn" data-action="file" data-target="rough-context">&#128206; Upload</button>
+              <input class="file-input" type="file" data-target="rough-context" accept=".pdf,.docx,.txt" />
+              <button class="import-btn" data-action="gdoc" data-target="rough-context">&#128196; Google Doc</button>
+            </div>
+          </div>
+          <div class="gdoc-row" data-for="rough-context" hidden>
+            <input type="url" class="gdoc-url-input" placeholder="Paste Google Doc URL..." />
+            <button class="gdoc-import-btn" data-target="rough-context">Import</button>
+          </div>
+          <span class="import-status" data-for="rough-context"></span>
+        </div>
+
+        <!-- Meeting Notes -->
+        <div class="card">
+          <div class="card-header">
+            <span class="card-label">Meeting Notes</span>
+            <span class="card-hint">optional</span>
+          </div>
+          <textarea id="meeting-notes" placeholder="Paste meeting notes, decisions, discussion points..."></textarea>
+          <div class="card-footer">
+            <span class="char-count" data-for="meeting-notes"></span>
+            <div class="import-row">
+              <button class="import-btn" data-action="file" data-target="meeting-notes">&#128206; Upload</button>
+              <input class="file-input" type="file" data-target="meeting-notes" accept=".pdf,.docx,.txt" />
+              <button class="import-btn" data-action="gdoc" data-target="meeting-notes">&#128196; Google Doc</button>
+            </div>
+          </div>
+          <div class="gdoc-row" data-for="meeting-notes" hidden>
+            <input type="url" class="gdoc-url-input" placeholder="Paste Google Doc URL..." />
+            <button class="gdoc-import-btn" data-target="meeting-notes">Import</button>
+          </div>
+          <span class="import-status" data-for="meeting-notes"></span>
+        </div>
+
+        <!-- Action Items -->
+        <div class="card">
+          <div class="card-header">
+            <span class="card-label">Action Items</span>
+            <span class="card-hint">optional</span>
+          </div>
+          <textarea id="action-items" placeholder="List action items, tasks, or requirements..."></textarea>
+          <div class="card-footer">
+            <span class="char-count" data-for="action-items"></span>
+            <div class="import-row">
+              <button class="import-btn" data-action="file" data-target="action-items">&#128206; Upload</button>
+              <input class="file-input" type="file" data-target="action-items" accept=".pdf,.docx,.txt" />
+              <button class="import-btn" data-action="gdoc" data-target="action-items">&#128196; Google Doc</button>
+            </div>
+          </div>
+          <div class="gdoc-row" data-for="action-items" hidden>
+            <input type="url" class="gdoc-url-input" placeholder="Paste Google Doc URL..." />
+            <button class="gdoc-import-btn" data-target="action-items">Import</button>
+          </div>
+          <span class="import-status" data-for="action-items"></span>
+        </div>
+
+        <!-- Voice Input -->
+        <div class="card">
+          <div class="card-header">
+            <span class="card-label">Voice Input</span>
+            <span class="card-hint">optional</span>
+          </div>
+          <p id="voice-model-hint" class="voice-model-hint"></p>
+          <div class="voice-controls">
+            <button id="record-btn" class="record-btn">
+              <span class="mic-icon">&#9679;</span>
+              <span class="record-label">Record</span>
+            </button>
+            <span id="voice-status" class="voice-status"></span>
+          </div>
+          <textarea id="transcribed-voice" placeholder="Transcribed voice will appear here — or type directly..."></textarea>
+          <span class="char-count" data-for="transcribed-voice"></span>
+          <p id="voice-unavailable" class="voice-unavailable" hidden>
+            Voice input requires Chrome or Edge (browser fallback only).
+          </p>
+        </div>
+
+        <!-- Generate -->
+        <div class="generate-row">
+          <button id="generate-btn" class="generate-btn">Generate PRD</button>
+          <p id="input-error" class="input-error" hidden></p>
+        </div>
+
+      </section>
+
+      <!-- ── RIGHT: Output ── -->
+      <section class="output-panel">
+        <div class="output-header">
+          <span class="output-title">Output</span>
+          <div class="output-toolbar" id="output-toolbar" hidden>
+            <div class="toggle-group">
+              <button id="preview-btn" class="tgl active">Preview</button>
+              <button id="edit-btn"    class="tgl">Edit</button>
+            </div>
+            <button id="save-prd-btn" class="tool-btn save-btn" hidden>Save</button>
+            <button id="library-toggle-btn" class="tool-btn" hidden>Library</button>
+            <button id="copy-btn" class="tool-btn">Copy</button>
+            <div class="export-wrap">
+              <button id="export-btn" class="tool-btn export-trigger">Export &#9660;</button>
+              <ul class="export-menu" id="export-menu" hidden>
+                <li data-export="md">Markdown (.md)</li>
+                <li data-export="html">HTML file</li>
+                <li data-export="txt">Plain text</li>
+                <li data-export="print">Print / PDF</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div id="output-area" class="output-area">
+          <div class="output-placeholder">
+            <p class="ph-title">Your PRD will appear here</p>
+            <p class="ph-sub">Fill in any input on the left and click <strong>Generate PRD</strong>.<br/>You don't need to fill every section — add what you have.</p>
+          </div>
+        </div>
+
+        <textarea id="edit-textarea" class="edit-textarea" hidden spellcheck="true"></textarea>
+
+        <div id="loading" class="loading" hidden>
+          <div class="spinner"></div>
+          <span>Generating with <span id="loading-provider">Claude</span>…</span>
+        </div>
+
+        <div id="output-error" class="output-error" hidden></div>
+
+        <!-- PRD Library (Firestore-backed) -->
+        <div id="library-panel" class="library-panel" hidden>
+          <div class="library-panel-header">
+            <span class="library-panel-title">Saved PRDs</span>
+            <span id="library-count" class="library-count"></span>
+          </div>
+          <ul id="library-list" class="library-list"></ul>
+          <p id="library-empty" class="library-empty" hidden>No saved PRDs in this project yet.<br/>Generate one and click <strong>Save</strong>.</p>
+        </div>
+
+      </section>
+
+    </div>
+  </main>
+
+  <footer>
+    <span>Powered by <strong id="footer-provider">Claude 4.6 Sonnet</strong></span>
+  </footer>
+
+  <!-- PDF.js and mammoth for client-side file parsing. Keep versions in sync. -->
+  <!-- Firebase compat SDK (keep all three at the same version) -->
+  <!-- Inline confirm modal (replaces browser confirm) -->
+  <div id="confirm-modal-overlay" class="name-modal-overlay" hidden>
+    <div class="name-modal">
+      <p id="confirm-modal-msg" class="name-modal-label" style="line-height:1.5"></p>
+      <div class="name-modal-actions">
+        <button id="confirm-modal-cancel" class="name-modal-btn secondary">Cancel</button>
+        <button id="confirm-modal-ok"     class="name-modal-btn danger-btn">Delete</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Inline name-input modal (replaces browser prompt) -->
+  <div id="name-modal-overlay" class="name-modal-overlay" hidden>
+    <div class="name-modal">
+      <p id="name-modal-label" class="name-modal-label">Project name</p>
+      <input id="name-modal-input" class="name-modal-input" type="text" autocomplete="off" />
+      <div class="name-modal-actions">
+        <button id="name-modal-cancel" class="name-modal-btn secondary">Cancel</button>
+        <button id="name-modal-ok"     class="name-modal-btn primary">OK</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+  <script src="firebase-config.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
