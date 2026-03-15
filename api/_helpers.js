@@ -100,7 +100,7 @@ function callGemini(prompt, apiKey) {
   });
   return httpsRequest({
     hostname: 'generativelanguage.googleapis.com',
-    path: '/v1beta/models/gemini-2.5-flash-preview-04-17:generateContent',
+    path: '/v1beta/models/gemini-2.5-flash:generateContent',
     method: 'POST',
     headers: {
       'x-goog-api-key': apiKey,
@@ -166,7 +166,7 @@ function callGeminiTranscribe(audioBase64, mimeType, apiKey) {
   });
   return httpsRequest({
     hostname: 'generativelanguage.googleapis.com',
-    path: '/v1beta/models/gemini-2.5-flash-preview-04-17:generateContent',
+    path: '/v1beta/models/gemini-2.5-flash:generateContent',
     method: 'POST',
     headers: {
       'x-goog-api-key': apiKey,
