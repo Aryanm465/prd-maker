@@ -681,7 +681,11 @@ generateBtn.addEventListener('click', async () => {
     return;
   }
 
-  const customInstructions = systemPromptEl.value.trim();
+  // Use PRD_PROMPTS directly as source of truth for preset styles;
+  // only use textarea value when user has manually edited it
+  const customInstructions = systemPromptEl.dataset.userEdited === 'true'
+    ? systemPromptEl.value.trim()
+    : (PRD_PROMPTS[activePrdType] || PRD_PROMPTS.custom);
 
   outputArea.style.display = 'none';
   editTextarea.hidden       = true;
